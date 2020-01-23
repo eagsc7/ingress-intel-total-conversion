@@ -494,7 +494,7 @@ RegionScoreboard.HistoryChart = (function() {
     svgTickText = [];
 
     // svg area 400x130. graph area 350x100, offset to 40,10
-    var svg = '<div><svg width="400" height="133" style="margin-left: 10px;">' +
+    var svg = '<div style="overflow:hidden"><svg width="400" height="133" style="margin-left: 10px;">' +
       svgBackground() +
       svgAxis(max) +
       svgAveragePath() +
@@ -654,9 +654,9 @@ RegionScoreboard.HistoryChart = (function() {
   }
 
   function formatNumber(num) {
-    return (num>=1000000000 ? (num/1000000000).toFixed() + 'B' :
-      num>=1000000 ? (num/1000000).toFixed() + 'M' :
-        num>=1000 ? (num/1000).toFixed() + 'k' :
+    return (num>=1000000000 ? (num/1000000000) + 'B' :
+      num>=1000000 ? (num/1000000) + 'M' :
+        num>=1000 ? (num/1000) + 'k' :
           num);
   }
 
