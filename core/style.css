@@ -1223,6 +1223,9 @@ table.artifact .portal {
 .cellscore .ui-accordion-header-active:before {
 	content: "⊟";
 }
+.cellscore table {
+  width: 385px;
+}
 
 /* prevent nonfunctional horizontal scrollbar in Chrome (perhaps jQuery issue) */
 .cellscore .historychart > div {
