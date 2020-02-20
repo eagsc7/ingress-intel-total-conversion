@@ -165,6 +165,7 @@ window.setupMap = function() {
   window.map = new L.Map('map', {
     center: [0,0],
     zoom: 1,
+    crs: L.CRS.S2,
     zoomControl: (typeof android !== 'undefined' && android && android.showZoom) ? android.showZoom() : true,
     minZoom: MIN_ZOOM,
 //    zoomAnimation: false,
@@ -174,7 +175,6 @@ window.setupMap = function() {
       ? window.PREFER_CANVAS
       : true // default
   });
-  if (L.CRS.S2) { map.options.crs = L.CRS.S2; }
 
   L.Renderer.mergeOptions({
     padding: window.RENDERER_PADDING || 0.5
@@ -617,34 +617,36 @@ window.extendLeaflet = function() {
     return new L.DivIcon.ColoredSvg(color, options);
   };
 
-  /* !!This block is commented out as it's unclear if we really need this patch
+  // use the earth radius value from s2 geometry library
+  // https://github.com/google/s2-geometry-library-java/blob/c28f287b996c0cedc5516a0426fbd49f6c9611ec/src/com/google/common/geometry/S2LatLng.java#L31
+  var EARTH_RADIUS_METERS = 6367000.0;
+  // distance calculations with that constant are a little closer to values observable in Ingress client.
+  // difference is:
+  // - ~0.06% when using LatLng.distanceTo() (R is 6371 vs 6367)
+  // - ~0.17% when using Map.distance() / CRS.destance() (R is 6378.137 vs 6367)
+  // (Yes, Leaflet is not consistent here, e.g. see https://github.com/Leaflet/Leaflet/pull/6928)
 
-  // See https://github.com/IITC-CE/ingress-intel-total-conversion/issues/122
+  // this affects LatLng.distanceTo(), which is currently used in most iitc plugins
+  L.CRS.Earth.R = EARTH_RADIUS_METERS;
 
-  // use the earth radius value used by the s2 geometry library
-  // this library is used in the ingress backend, so distance calculation, etc
-  // are far closer if we use the value from that
-
-  L.CRS.Earth.R = 6367000;
-
-  var s2SphericalMercator = L.Util.extend({}, L.Projection.SphericalMercator, {
-    R: window.EARTH_RADIUS,
+  // this affects Map.distance(), which is known to be used in draw-tools
+  var SphericalMercator = L.Projection.SphericalMercator;
+  SphericalMercator.S2 = L.Util.extend({}, SphericalMercator, {
+    R: EARTH_RADIUS_METERS,
     bounds: (function () {
-      var d = window.EARTH_RADIUS * Math.PI;
+      var d = EARTH_RADIUS_METERS * Math.PI;
       return L.bounds([-d, -d], [d, d]);
     })()
   });
 
   L.CRS.S2 = L.Util.extend({}, L.CRS.Earth, {
-    code: 'EPSG:S2',
-    projection: s2SphericalMercator,
+    code: 'Ingress',
+    projection: SphericalMercator.S2,
     transformation: (function () {
-      var scale = 0.5 / (Math.PI * s2SphericalMercator.R);
+      var scale = 0.5 / (Math.PI * SphericalMercator.S2.R);
       return L.transformation(scale, 0.5, -scale, 0.5);
     }())
   });
-
-  */
 
   // Fix Leaflet: handle touchcancel events in Draggable
   L.Draggable.prototype._onDownOrig = L.Draggable.prototype._onDown;
