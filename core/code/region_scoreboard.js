@@ -198,7 +198,7 @@ window.RegionScoreboard = (function() {
     mainDialog.html(
       '<div class="cellscore">' +
         '<b>Region scores for ' + regionScore.regionName + '</b>' +
-        '<div>' + createResults() + RegionScoreboard.HistoryChart.create(regionScore, logscale) + '</div>' +
+        '<div class="historychart">' + createResults() + RegionScoreboard.HistoryChart.create(regionScore, logscale) + '</div>' +
         '<b>Checkpoint overview</b><div>' + createHistoryTable() + '</div>' +
         '<b>Top agents</b><div>' + createAgentTable() + '</div>' +
       '</div>' +
@@ -501,8 +501,8 @@ RegionScoreboard.HistoryChart = (function() {
       svgFactionPath() +
       svgCheckPointMarkers() +
       svgTickText.join('') +
-      '<foreignObject height="18" width="60" y="111" x="0" class="node"><label title="Logarithmic scale">' +
-      '<input type="checkbox" class="logscale" style="height:auto;padding:0;vertical-align:middle"' + (logscale?' checked':'') + '/>' +
+      '<foreignObject height="18" width="60" y="113" x="0" class="node"><label title="Logarithmic scale">' +
+      '<input type="checkbox" class="logscale"' + (logscale?' checked':'') + '/>' +
       'log</label></foreignObject>' +
       '</svg></div>';
 
