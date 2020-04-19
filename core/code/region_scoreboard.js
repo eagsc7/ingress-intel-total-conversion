@@ -272,7 +272,6 @@ window.RegionScoreboard = (function() {
     var order_team = (PLAYER.team === 'RESISTANCE' ? [1,0]:[0,1]);
 
     var table = '<table class="checkpoint_table" width="90%"><thead><tr>' +
-      '<th align="right">CP</th><th>Time</th>' +
       '<th align="right">' + window.TEAM_NAMES[order_name[0]] + '</th>' +
       '<th align="right">' + window.TEAM_NAMES[order_name[1]] + '</th></tr></thead>';
 
@@ -292,7 +291,6 @@ window.RegionScoreboard = (function() {
 
       table += '<tr>' +
         '<td>' + cp + '</td>' +
-        '<td>' + formatDayHours(regionScore.getCheckpointEnd(cp)) + '</td>' +
         '<td' + style1 + '>' + digits(score[order_team[0]]) + '</td>' +
         '<td' + style2 + '>' + digits(score[order_team[1]]) + '</td></tr>';
     }
